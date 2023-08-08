@@ -21,6 +21,13 @@ namespace its
 {
 namespace study
 {
+
+struct ITSCheckPurityParamConfig : public o2::conf::ConfigurableParamHelper<ITSCheckPurityParamConfig> {
+  std::string outFileName = "purityStudy.root";
+  int example = 5;
+  O2ParamDef(ITSCheckPurityParamConfig, "ITSCheckPurityParam");
+};
+
 struct ITSCheckTracksParamConfig : public o2::conf::ConfigurableParamHelper<ITSCheckTracksParamConfig> {
   std::string outFileName = "TrackCheckStudy.root";
   size_t effHistBins = 100;
