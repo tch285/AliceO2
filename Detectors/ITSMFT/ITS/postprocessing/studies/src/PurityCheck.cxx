@@ -27,6 +27,7 @@
 #include "DataFormatsGlobalTracking/RecoContainer.h"
 #include "ReconstructionDataFormats/GlobalTrackID.h"
 #include "ReconstructionDataFormats/PrimaryVertex.h"
+#include "SimulationDataFormat/MCTruthContainer.h"
 #include "ReconstructionDataFormats/PID.h"
 #include "ReconstructionDataFormats/V0.h"
 #include "ReconstructionDataFormats/Track.h"
@@ -360,8 +361,7 @@ class PurityCheckStudy : public Task
 
  private:
   // Other functions
-  void process(o2::globaltracking::RecoContainer&);
-  void loadData(o2::globaltracking::RecoContainer&);
+  void process(o2::globaltracking::RecoContainer&, ProcessingContext&);
 
   static o2::MCCompLabel getMainLabel(std::vector<o2::MCCompLabel>&); // voting algorithm, might be claener to attach to RofInfo
 
@@ -404,7 +404,7 @@ void PurityCheckStudy::init(InitContext& ic)
 
   prepareOutput();
 
-  mKineReader = std::make_unique<o2::steer::MCKinematicsReader>("collisioncontext.root");
+  // mKineReader = std::make_unique<o2::steer::MCKinematicsReader>("collisioncontext.root");
   for (int iEvent{0}; iEvent < mKineReader->getNEvents(0); iEvent++) {
     auto mctrk = mKineReader->getTracks(0, iEvent);
     mMCTracks.insert(mMCTracks.end(), mctrk.begin(), mctrk.end());
@@ -415,7 +415,7 @@ void PurityCheckStudy::init(InitContext& ic)
 
 void PurityCheckStudy::prepareOutput()
 {
-  auto& params = o2::its::study::ITSAvgClusSizeParamConfig::Instance();
+  auto& params = o2::its::study::ITSCheckPurityParamConfig::Instance();
   mOutName = params.outFileName;
 
   mH1_ROF_Vertexing_good = std::make_unique<TH1F>();
@@ -442,7 +442,7 @@ void PurityCheckStudy::run(ProcessingContext& pc)
   o2::globaltracking::RecoContainer recoData;
   recoData.collectData(pc, *mDataRequest.get());
   updateTimeDependentParams(pc); // Make sure this is called after recoData.collectData, which may load some conditions
-  process(recoData);
+  process(recoData, pc);
 }
 
 o2::MCCompLabel PurityCheckStudy::getMainLabel(std::vector<o2::MCCompLabel>& labs)
@@ -477,19 +477,25 @@ o2::MCCompLabel PurityCheckStudy::getMainLabel(std::vector<o2::MCCompLabel>& lab
   return lab;
 }
 
-void PurityCheckStudy::loadData(o2::globaltracking::RecoContainer& recoData)
+void PurityCheckStudy::process(o2::globaltracking::RecoContainer& recoData, ProcessingContext& pc)
 {
+  auto& params = o2::its::study::ITSCheckPurityParamConfig::Instance();
   auto compClus = recoData.getITSClusters();
   auto compClusMC = recoData.getITSClustersMCLabels();
+  LOGP(info, "Got {} clustersMC.", compClusMC->getNElements());
   auto rofrecs = recoData.getITSClustersROFRecords();
-  auto pvs = recoData.getPrimaryVertices();
-}
+  LOGP(info, "Got {} clusters.", compClus.size());
 
-void PurityCheckStudy::process(o2::globaltracking::RecoContainer& recoData)
-{
-  auto& params = o2::its::study::ITSAvgClusSizeParamConfig::Instance();
+  // auto recLabelsArr = pc.inputs().get<std::vector<o2::MCCompLabel>>("labelsVertices");
+  // LOGP(info, "got {} recLabelsArr", recLabelsArr.size());
+  auto recVerArr = pc.inputs().get<std::vector<Vertex>>("vertices");
+  LOGP(info, "got {} recVerArr", recVerArr.size());
+  auto recVerROFArr = pc.inputs().get<std::vector<ROFRecord>>("vtxROF");
+  LOGP(info, "got {} recVerROFArr", recVerROFArr.size());
 
-  loadData(recoData);
+  auto recLabelsArr = pc.inputs().get<std::vector<o2::MCCompLabel>*>("labelsVertices");
+  LOGP(info, "got {} recLabelsArr", recLabelsArr->size());
+
 }
 
 void PurityCheckStudy::updateTimeDependentParams(ProcessingContext& pc)
@@ -505,21 +511,30 @@ void PurityCheckStudy::updateTimeDependentParams(ProcessingContext& pc)
 
 void PurityCheckStudy::endOfStream(EndOfStreamContext& ec)
 {
-  auto& params = o2::its::study::ITSAvgClusSizeParamConfig::Instance();
+  auto& params = o2::its::study::ITSCheckPurityParamConfig::Instance();
   plotHistograms();
+}
+
+void PurityCheckStudy::plotHistograms()
+{
+  LOGP(info, "plotting histos");
 }
 
 void PurityCheckStudy::finaliseCCDB(ConcreteDataMatcher& matcher, void* obj)
 {
 }
 
-DataProcessorSpec getPurityCheckStudy(mask_t srcTracksMask, mask_t srcClustersMask, std::shared_ptr<o2::steer::MCKinematicsReader> kineReader)
+DataProcessorSpec getPurityCheckStudy(std::shared_ptr<o2::steer::MCKinematicsReader> kineReader)
 {
   std::vector<OutputSpec> outputs;
   auto dataRequest = std::make_shared<DataRequest>();
-  //   dataRequest->requestTracks(srcTracksMask, true);
-  dataRequest->requestClusters(srcClustersMask, true);
-  dataRequest->requestPrimaryVerterticesTMP(true); // NOTE: may be necessary to use requestPrimaryVerterticesTMP()...
+  dataRequest->requestITSClusters(true);
+  std::vector<InputSpec> inputs = dataRequest->inputs;
+  inputs.emplace_back("labelsVertices", "ITS", "VERTICESMCTR", 0, Lifetime::Timeframe);
+  inputs.emplace_back("vertices", "ITS", "VERTICES", 0, Lifetime::Timeframe);
+  inputs.emplace_back("vtxROF", "ITS", "VERTICESROF", 0, Lifetime::Timeframe);
+  // branch name matching from TrackWriterSpec.cxx:L53
+  // manual inputs from TrackerSpec.cxx:L375
 
   auto ggRequest = std::make_shared<o2::base::GRPGeomRequest>(false,                             // orbitResetTime
                                                               true,                              // GRPECS=true
@@ -527,11 +542,11 @@ DataProcessorSpec getPurityCheckStudy(mask_t srcTracksMask, mask_t srcClustersMa
                                                               false,                             // GRPMagField
                                                               false,                             // askMatLUT
                                                               o2::base::GRPGeomRequest::Aligned, // geometry
-                                                              dataRequest->inputs,
+                                                              inputs,
                                                               true);
   return DataProcessorSpec{
-    "its-study-AvgClusSize",
-    dataRequest->inputs,
+    "its-study-purity-check",
+    inputs,
     outputs,
     AlgorithmSpec{adaptFromTask<PurityCheckStudy>(dataRequest, ggRequest, kineReader)},
     Options{}};

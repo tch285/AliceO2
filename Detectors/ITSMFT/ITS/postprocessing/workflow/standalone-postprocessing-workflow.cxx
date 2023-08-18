@@ -63,8 +63,6 @@ WorkflowSpec defineDataProcessing(ConfigContext const& configcontext)
   GID::mask_t srcCls = allowedSourcesClus & GID::getSourcesMask(configcontext.options().get<std::string>("cluster-sources"));
 
   o2::globaltracking::InputHelper::addInputSpecs(configcontext, specs, srcCls, srcTrc, srcTrc, useMC, srcCls, srcTrc);
-  o2::globaltracking::InputHelper::addInputSpecsPVertex(configcontext, specs, useMC);
-  o2::globaltracking::InputHelper::addInputSpecsSVertex(configcontext, specs);
 
   std::shared_ptr<o2::steer::MCKinematicsReader> mcKinematicsReader;
   if (useMC) {
@@ -75,10 +73,13 @@ WorkflowSpec defineDataProcessing(ConfigContext const& configcontext)
   // Declare specs related to studies hereafter
   if (configcontext.options().get<bool>("impact-parameter-study")) {
     anyStudy = true;
+    o2::globaltracking::InputHelper::addInputSpecsPVertex(configcontext, specs, useMC);
     specs.emplace_back(o2::its::study::getImpactParameterStudy(srcTrc, srcCls, useMC));
   }
   if (configcontext.options().get<bool>("cluster-size-study")) {
     anyStudy = true;
+    o2::globaltracking::InputHelper::addInputSpecsPVertex(configcontext, specs, useMC);
+    o2::globaltracking::InputHelper::addInputSpecsSVertex(configcontext, specs);
     specs.emplace_back(o2::its::study::getAvgClusSizeStudy(srcTrc, srcCls, useMC, mcKinematicsReader));
   }
   if (configcontext.options().get<bool>("track-study")) {
@@ -90,7 +91,7 @@ WorkflowSpec defineDataProcessing(ConfigContext const& configcontext)
       LOGP(warning, "Purity check study cannot be requested without MC.  Skipping.");
     } else {
       anyStudy = true;
-      specs.emplace_back(o2::its::study::getPurityCheckStudy(GID::getSourcesMask("ITS"), GID::getSourcesMask("ITS"), mcKinematicsReader));
+      specs.emplace_back(o2::its::study::getPurityCheckStudy(mcKinematicsReader));
     }
   }
   if (!anyStudy) {
