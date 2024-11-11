@@ -167,7 +167,7 @@ class TrackCheckStudy : public Task
   const char* ParticleName[7] = {"e^{-/+}", "#pi^{-/+}", "p", "^{2}H", "^{3}He", "_{#Lambda}^{3}H", "k^{+/-}"};
   const int PdgcodeClusterFake[7] = {11, 211, 2212, 1000010020, 100002030, 1010010030, 321};
   const char* name[3] = {"_{#Lambda}^{3}H", "#Lambda", "k^{0}_{s}"};
-  const char* particleToanalize[4] = {"IperT", "Lambda", "k0s", "Tot"}; // [3]=Total of secondary particle
+  const char* particleToAnalyze[4] = {"Hypertriton", "Lambda", "k0s", "Tot"}; // [3]=Total of secondary particle
   const int PDG[3] = {1010010030, 3122, 310};
   const char* ProcessName[50];
   int colorArr[4] = {kGreen, kRed, kBlue, kOrange};
@@ -242,14 +242,14 @@ void TrackCheckStudy::init(InitContext& ic)
   }
   mGoodPt = std::make_unique<TH1D>("goodPt", ";#it{p}_{T} (GeV/#it{c});Efficiency (fake-track rate)", pars.effHistBins, xbins.data());
   mGoodEta = std::make_unique<TH1D>("goodEta", ";#eta;Number of tracks", 60, -3, 3);
-  mGoodPhi = std::make_unique<TH1D>("goodPhi", ";#phi;Number of tracks", 40, 0, 2*TMath::Pi());
+  mGoodPhi = std::make_unique<TH1D>("goodPhi", ";#phi;Number of tracks", 40, 0, 2 * TMath::Pi());
   mGoodPtSec = std::make_unique<TH1D>("goodPtSec", ";#it{p}_{T} (GeV/#it{c});Efficiency (fake-track rate)", pars.effHistBins, xbins.data());
   mGoodEtaSec = std::make_unique<TH1D>("goodEtaSec", ";#eta;Number of tracks", 60, -3, 3);
   mGoodChi2 = std::make_unique<TH1D>("goodChi2", ";#it{p}_{T} (GeV/#it{c});Efficiency (fake-track rate)", 200, 0, 100);
 
   mFakePt = std::make_unique<TH1D>("fakePt", ";#it{p}_{T} (GeV/#it{c});Fak", pars.effHistBins, xbins.data());
   mFakeEta = std::make_unique<TH1D>("fakeEta", ";#eta;Number of tracks", 60, -3, 3);
-  mFakePhi = std::make_unique<TH1D>("fakePhi", ";#phi;Number of tracks", 40, 0, 2*TMath::Pi());
+  mFakePhi = std::make_unique<TH1D>("fakePhi", ";#phi;Number of tracks", 40, 0, 2 * TMath::Pi());
   mFakePtSec = std::make_unique<TH1D>("fakePtSec", ";#it{p}_{T} (GeV/#it{c});Fak", pars.effHistBins, xbins.data());
   mFakeEtaSec = std::make_unique<TH1D>("fakeEtaSec", ";#eta;Number of tracks", 60, -3, 3);
   mFakeChi2 = std::make_unique<TH1D>("fakeChi2", ";#it{p}_{T} (GeV/#it{c});Fak", 200, 0, 100);
@@ -258,11 +258,11 @@ void TrackCheckStudy::init(InitContext& ic)
 
   mClonePt = std::make_unique<TH1D>("clonePt", ";#it{p}_{T} (GeV/#it{c});Clone", pars.effHistBins, xbins.data());
   mCloneEta = std::make_unique<TH1D>("cloneEta", ";#eta;Number of tracks", 60, -3, 3);
-  mClonePhi = std::make_unique<TH1D>("clonePhi", ";#phi;Number of tracks", 40, 0, 2*TMath::Pi());
+  mClonePhi = std::make_unique<TH1D>("clonePhi", ";#phi;Number of tracks", 40, 0, 2 * TMath::Pi());
 
   mDenominatorPt = std::make_unique<TH1D>("denominatorPt", ";#it{p}_{T} (GeV/#it{c});Den", pars.effHistBins, xbins.data());
   mDenominatorEta = std::make_unique<TH1D>("denominatorEta", ";#eta;Number of tracks", 60, -3, 3);
-  mDenominatorPhi = std::make_unique<TH1D>("denominatorPhi", ";#phi;Number of tracks", 40, 0, 2*TMath::Pi());
+  mDenominatorPhi = std::make_unique<TH1D>("denominatorPhi", ";#phi;Number of tracks", 40, 0, 2 * TMath::Pi());
   mDenominatorPtSec = std::make_unique<TH1D>("denominatorPtSec", ";#it{p}_{T} (GeV/#it{c});Den", pars.effHistBins, xbins.data());
   mDenominatorEtaSec = std::make_unique<TH1D>("denominatorEtaSec", ";#eta;Number of tracks", 60, -3, 3);
 
@@ -307,13 +307,13 @@ void TrackCheckStudy::init(InitContext& ic)
   }
   for (int ii = 0; ii < 4; ii++) {
 
-    mGoodRad[ii] = std::make_unique<TH1D>(Form("goodRad_%s", particleToanalize[ii]), ";z_{SV} [cm];Number of tracks", 100, 0., 20.);
-    mFakeRad[ii] = std::make_unique<TH1D>(Form("FakeRad_%s", particleToanalize[ii]), ";#eta;Number of tracks", 100, 0., 20.);
-    mTotRad[ii] = std::make_unique<TH1D>(Form("TotRad_%s", particleToanalize[ii]), ";#eta;Number of tracks", 100, 0., 20.);
+    mGoodRad[ii] = std::make_unique<TH1D>(Form("goodRad_%s", particleToAnalyze[ii]), ";z_{SV} [cm];Number of tracks", 100, 0., 20.);
+    mFakeRad[ii] = std::make_unique<TH1D>(Form("FakeRad_%s", particleToAnalyze[ii]), ";#eta;Number of tracks", 100, 0., 20.);
+    mTotRad[ii] = std::make_unique<TH1D>(Form("TotRad_%s", particleToAnalyze[ii]), ";#eta;Number of tracks", 100, 0., 20.);
 
-    mGoodZ[ii] = std::make_unique<TH1D>(Form("goodZ_%s", particleToanalize[ii]), ";z_{SV} [cm];Number of tracks", 100, -50., 50.);
-    mFakeZ[ii] = std::make_unique<TH1D>(Form("FakeZ_%s", particleToanalize[ii]), ";z_{SV} [cm];Number of tracks", 100, -50., 50.);
-    mTotZ[ii] = std::make_unique<TH1D>(Form("TotZ_%s", particleToanalize[ii]), ";z_{SV} [cm];Number of tracks", 100, -50., 50.);
+    mGoodZ[ii] = std::make_unique<TH1D>(Form("goodZ_%s", particleToAnalyze[ii]), ";z_{SV} [cm];Number of tracks", 100, -50., 50.);
+    mFakeZ[ii] = std::make_unique<TH1D>(Form("FakeZ_%s", particleToAnalyze[ii]), ";z_{SV} [cm];Number of tracks", 100, -50., 50.);
+    mTotZ[ii] = std::make_unique<TH1D>(Form("TotZ_%s", particleToAnalyze[ii]), ";z_{SV} [cm];Number of tracks", 100, -50., 50.);
     mClusterFake[ii] = std::make_unique<TH2D>(Form("Clusters_fake_%s", ParticleName[ii]), ";particle generating fake cluster; production process", 7, 0., 7., 50, 0, 50);
 
     mGoodRad[ii]->Sumw2();
@@ -324,13 +324,13 @@ void TrackCheckStudy::init(InitContext& ic)
     mTotZ[ii]->Sumw2();
 
     for (int yy = 0; yy < 4; yy++) { // divided by layer
-      mGoodPts[ii][yy] = std::make_unique<TH1D>(Form("goodPts_%s_%d", particleToanalize[ii], yy), ";#it{p}_{T} (GeV/#it{c});Efficiency (fake-track rate)", pars.effHistBins, xbins.data());
-      mFakePts[ii][yy] = std::make_unique<TH1D>(Form("FakePts_%s_%d", particleToanalize[ii], yy), ";#it{p}_{T} (GeV/#it{c});Efficiency (fake-track rate)", pars.effHistBins, xbins.data());
-      mTotPts[ii][yy] = std::make_unique<TH1D>(Form("TotPts_%s_%d", particleToanalize[ii], yy), ";#it{p}_{T} (GeV/#it{c});Efficiency (fake-track rate)", pars.effHistBins, xbins.data());
+      mGoodPts[ii][yy] = std::make_unique<TH1D>(Form("goodPts_%s_%d", particleToAnalyze[ii], yy), ";#it{p}_{T} (GeV/#it{c});Efficiency (fake-track rate)", pars.effHistBins, xbins.data());
+      mFakePts[ii][yy] = std::make_unique<TH1D>(Form("FakePts_%s_%d", particleToAnalyze[ii], yy), ";#it{p}_{T} (GeV/#it{c});Efficiency (fake-track rate)", pars.effHistBins, xbins.data());
+      mTotPts[ii][yy] = std::make_unique<TH1D>(Form("TotPts_%s_%d", particleToAnalyze[ii], yy), ";#it{p}_{T} (GeV/#it{c});Efficiency (fake-track rate)", pars.effHistBins, xbins.data());
 
-      mGoodEtas[ii][yy] = std::make_unique<TH1D>(Form("goodEtas_%s_%d", particleToanalize[ii], yy), ";#eta;Number of tracks", 60, -3, 3);
-      mFakeEtas[ii][yy] = std::make_unique<TH1D>(Form("FakeEtas_%s_%d", particleToanalize[ii], yy), ";#eta;Number of tracks", 60, -3, 3);
-      mTotEtas[ii][yy] = std::make_unique<TH1D>(Form("TotEtas_%s_%d", particleToanalize[ii], yy), ";#eta;Number of tracks", 60, -3, 3);
+      mGoodEtas[ii][yy] = std::make_unique<TH1D>(Form("goodEtas_%s_%d", particleToAnalyze[ii], yy), ";#eta;Number of tracks", 60, -3, 3);
+      mFakeEtas[ii][yy] = std::make_unique<TH1D>(Form("FakeEtas_%s_%d", particleToAnalyze[ii], yy), ";#eta;Number of tracks", 60, -3, 3);
+      mTotEtas[ii][yy] = std::make_unique<TH1D>(Form("TotEtas_%s_%d", particleToAnalyze[ii], yy), ";#eta;Number of tracks", 60, -3, 3);
 
       mGoodPts[ii][yy]->Sumw2();
       mFakePts[ii][yy]->Sumw2();
@@ -394,7 +394,7 @@ void TrackCheckStudy::init(InitContext& ic)
 
   for (int iH{4}; iH < 8; ++iH) {
     // check distributions on layers of fake clusters for tracks of different lengths.
-    // Different histograms if the correct cluster exist or not
+    // Different histograms if the correct cluster exists or not
     for (int jj = 0; jj < 3; jj++) {
       histLength[iH - 4][jj] = new TH1I(Form("trk_len_%d_%s", iH, name[jj]), Form("#exists cluster %s", name[jj]), 7, -.5, 6.5);
       histLength[iH - 4][jj]->SetFillColor(colorArr[jj] - 9);
@@ -497,7 +497,7 @@ void TrackCheckStudy::process()
       }
     }
   }
-  LOGP(info, "** Creating particle/clusters correspondance ... ");
+  LOGP(info, "** Creating particle/clusters correspondence ... ");
   for (auto iSource{0}; iSource < mParticleInfo.size(); ++iSource) {
     for (auto iCluster{0}; iCluster < mClusters.size(); ++iCluster) {
       auto labs = mClustersMCLCont->getLabels(iCluster); // ideally I can have more than one label per cluster
@@ -517,8 +517,8 @@ void TrackCheckStudy::process()
   LOGP(info, "** Analysing tracks ... ");
   int unaccounted{0}, good{0}, fakes{0};
   // ***secondary tracks***
-  int nPartForSpec[4][4];       // total number [particle 0=IperT, 1=Lambda, 2=k, 3=Other][n layer]
-  int nPartGoodorFake[4][4][2]; // number of good or fake [particle 0=IperT, 1=Lambda, 2=k, 3=Other][n layer][good=1 fake=0]
+  int nPartForSpec[4][4];       // total number [particle 0=Hypertriton, 1=Lambda, 2=k, 3=Other][n layer]
+  int nPartGoodorFake[4][4][2]; // number of good or fake [particle 0=Hypertriton, 1=Lambda, 2=Kaon, 3=Other][n layer][good=1 fake=0]
   for (int n = 0; n < 4; n++) {
     for (int m = 0; m < 4; m++) {
       nPartForSpec[n][m] = 0;
@@ -558,9 +558,9 @@ void TrackCheckStudy::process()
   }
   LOGP(info, "** Some statistics:");
   LOGP(info, "\t- Total number of tracks: {}", mTracks.size());
-  LOGP(info, "\t- Total number of tracks not corresponding to particles: {} ({:.2f} %)", unaccounted, unaccounted * 100. / mTracks.size());
-  LOGP(info, "\t- Total number of fakes: {} ({:.2f} %)", fakes, fakes * 100. / mTracks.size());
-  LOGP(info, "\t- Total number of good: {} ({:.2f} %)", good, good * 100. / mTracks.size());
+  LOGP(info, "\t- Total number of tracks not corresponding to particles: {} ({:.2f}%)", unaccounted, unaccounted * 100. / mTracks.size());
+  LOGP(info, "\t- Total number of fakes: {} ({:.2f}%)", fakes, fakes * 100. / mTracks.size());
+  LOGP(info, "\t- Total number of good: {} ({:.2f}%)", good, good * 100. / mTracks.size());
 
   LOGP(info, "** Filling histograms ... ");
   int evID = 0;
@@ -585,20 +585,17 @@ void TrackCheckStudy::process()
           mDenominatorPt->Fill(part.pt);
           mDenominatorEta->Fill(part.eta);
           mDenominatorPhi->Fill(part.phi);
-          // LOGP(info, "denominator phi");
-          
+
           if (part.isReco) {
             mGoodPt->Fill(part.pt);
             mGoodEta->Fill(part.eta);
             mGoodPhi->Fill(part.phi);
-            // LOGP(info, "good phi");
             goodP++;
             if (part.isReco > 1) {
               for (int _i{0}; _i < part.isReco - 1; ++_i) {
                 mClonePt->Fill(part.pt);
                 mCloneEta->Fill(part.eta);
                 mClonePhi->Fill(part.phi);
-                // LOGP(info, "clone phi");
               }
             }
           }
@@ -606,7 +603,6 @@ void TrackCheckStudy::process()
             mFakePt->Fill(part.pt);
             mFakeEta->Fill(part.eta);
             mFakePhi->Fill(part.phi);
-            // LOGP(info, "fake phi");
             fakeP++;
             if (part.isFake > 1) {
               for (int _i{0}; _i < part.isFake - 1; ++_i) {
@@ -639,7 +635,7 @@ void TrackCheckStudy::process()
         if (rad < rLayer3 && rad > rLayer2 && part.clusters == 0x78) { // layer 3
           nlayer = 3;
         }
-        if (nlayer == 0 || nlayer == 1 || nlayer == 2 || nlayer == 3) { // check if track is trackeable
+        if (nlayer == 0 || nlayer == 1 || nlayer == 2 || nlayer == 3) { // check if track is trackable
 
           totsecCont++;
           processvsZ->Fill(part.vz, part.prodProcess);
@@ -648,12 +644,12 @@ void TrackCheckStudy::process()
           mDenominatorEtaSec->Fill(part.eta);
           mTotRad[3]->Fill(rad);
           mTotZ[3]->Fill(part.vz);
-          mTotPts[nlayer][3]->Fill(part.pt);
-          mTotEtas[nlayer][3]->Fill(part.eta);
-          mTotPts[nlayer][3]->Fill(part.pt);
-          mTotEtas[nlayer][3]->Fill(part.eta);
+          mTotPts[3][nlayer]->Fill(part.pt);
+          mTotEtas[3][nlayer]->Fill(part.eta);
+          mTotPts[3][nlayer]->Fill(part.pt);
+          mTotEtas[3][nlayer]->Fill(part.eta);
           if (pdgcode == PDG[0] || pdgcode == -1 * PDG[0]) {
-            idxPart = 0; // IperT
+            idxPart = 0; // Hypertriton
           }
           if (pdgcode == PDG[1] || pdgcode == -1 * PDG[1]) {
             idxPart = 1; // Lambda
@@ -804,7 +800,7 @@ void TrackCheckStudy::process()
       }
     }
   }
-  LOGP(info, "number of primary tracks: {}, good:{}, fake:{}", totP, goodP, fakeP);
+  LOGP(info, "Number of primary tracks: {}, good: {}, fake: {}", totP, goodP, fakeP);
   int goodI = nPartGoodorFake[0][0][1] + nPartGoodorFake[0][1][1] + nPartGoodorFake[0][2][1] + nPartGoodorFake[0][3][1];
   int goodL = nPartGoodorFake[1][0][1] + nPartGoodorFake[1][1][1] + nPartGoodorFake[1][2][1] + nPartGoodorFake[1][3][1];
   int goodK = nPartGoodorFake[2][0][1] + nPartGoodorFake[2][1][1] + nPartGoodorFake[2][2][1] + nPartGoodorFake[2][3][1];
@@ -814,13 +810,28 @@ void TrackCheckStudy::process()
   LOGP(info, "** Some statistics on secondary tracks:");
 
   LOGP(info, "\t- Total number of secondary tracks: {}", totsec);
-  LOGP(info, "\t- Total number of secondary trackeable tracks : {}", totsecCont);
-  LOGP(info, "\t- Total number of secondary trackeable tracks good: {}, fake: {}", totgood, totfake);
-  LOGP(info, "\t- Total number of secondary trackeable tracks totsecCont: {}, totI: {}", totsecCont, totI);
-  // LOGP(info, "\t- Total number of secondary trackeable tracks from IperT: {} = {} %, Good={} % , fake={} %", totI, 100 * totI / totsecCont, 100 * goodI / totI, 100 * fakeI / totI);
-  LOGP(info, "\t- Total number of secondary trackeable tracks from Lam: {} = {} %, Good={} % , fake={} %", totL, 100 * totL / totsecCont, 100 * goodL / totL, 100 * fakeL / totL);
-  LOGP(info, "\t- Total number of secondary trackeable tracks from k: {} = {} %, Good={} % , fake={} %", totK, 100 * totK / totsecCont, 100 * goodK / totK, 100 * fakeK / totK);
-  LOGP(info, "\t- Total number of secondary trackeable tracks from Other: {} = {} %", totO, 100 * totO / totsecCont);
+  LOGP(info, "\t- Total number of secondary trackable tracks : {}", totsecCont);
+  LOGP(info, "\t- Total number of secondary trackable tracks good: {}, fake: {}", totgood, totfake);
+  if (totsecCont != 0) {
+    if (totI != 0) {
+      LOGP(info, "\t- Total number of secondary trackable tracks from HyperT: {} = {}%, good={}% , fake={}%", totI, 100 * totI / totsecCont, 100 * goodI / totI, 100 * fakeI / totI);
+    } else {
+      LOGP(info, "\t- Total number of secondary trackable tracks from HyperT: {} = {}%", totI, 100 * totI / totsecCont);
+    }
+    if (totL != 0) {
+      LOGP(info, "\t- Total number of secondary trackable tracks from Lambda: {} = {}%, good={}% , fake={}%", totL, 100 * totL / totsecCont, 100 * goodL / totL, 100 * fakeL / totL);
+    } else {
+      LOGP(info, "\t- Total number of secondary trackable tracks from Lambda: {} = {}%", totL, 100 * totL / totsecCont);
+    }
+    if (totK != 0) {
+      LOGP(info, "\t- Total number of secondary trackable tracks from Kaon:   {} = {}%, good={}% , fake={}%", totK, 100 * totK / totsecCont, 100 * goodK / totK, 100 * fakeK / totK);
+    } else {
+      LOGP(info, "\t- Total number of secondary trackable tracks from Kaon:   {} = {}%", totK, 100 * totK / totsecCont);
+    }
+    LOGP(info, "\t- Total number of secondary trackable tracks from Other:  {} = {}%", totO, 100 * totO / totsecCont);
+  } else {
+    LOGP(info, "\t- No statistics on different secondaries, since there were no trackable secondaries found.");
+  }
 
   LOGP(info, "** Computing efficiencies ...");
 
@@ -843,10 +854,8 @@ void TrackCheckStudy::process()
   mEffFakeEtaSec = std::make_unique<TEfficiency>(*mFakeEtaSec, *mDenominatorEtaSec);
 
   for (int ii = 0; ii < 4; ii++) {
-    std::cout << ii << std::endl;
     for (int yy = 0; yy < 4; yy++) {
       mEffGoodPts[ii][yy] = std::make_unique<TEfficiency>(*mGoodPts[ii][yy], *mTotPts[ii][yy]);
-      std::cout << yy << std::endl;
       mEffFakePts[ii][yy] = std::make_unique<TEfficiency>(*mFakePts[ii][yy], *mTotPts[ii][yy]);
       mEffGoodEtas[ii][yy] = std::make_unique<TEfficiency>(*mGoodEtas[ii][yy], *mTotEtas[ii][yy]);
       mEffFakeEtas[ii][yy] = std::make_unique<TEfficiency>(*mFakeEtas[ii][yy], *mTotEtas[ii][yy]);
@@ -855,7 +864,6 @@ void TrackCheckStudy::process()
     mEffFakeRad[ii] = std::make_unique<TEfficiency>(*mFakeRad[ii], *mTotRad[ii]);
     mEffGoodZ[ii] = std::make_unique<TEfficiency>(*mGoodZ[ii], *mTotZ[ii]);
     mEffFakeZ[ii] = std::make_unique<TEfficiency>(*mFakeZ[ii], *mTotZ[ii]);
-    std::cout << ii << " finish" << std::endl;
   }
 
   LOGP(info, "** Analysing pT resolution...");
@@ -972,34 +980,34 @@ void TrackCheckStudy::endOfStream(EndOfStreamContext& ec)
   fout.WriteTObject(mDenominatorPhi.get());
 
   for (int aa = 0; aa < 4; aa++) {
-    setEfficiencyGraph(mEffGoodRad[aa], Form("Good_Rad_%s", particleToanalize[aa]), ";Radius [cm];efficiency secondary particle", colorArr[aa]);
+    setEfficiencyGraph(mEffGoodRad[aa], Form("Good_Rad_%s", particleToAnalyze[aa]), ";Radius [cm];efficiency secondary particle", colorArr[aa]);
     fout.WriteTObject(mEffGoodRad[aa].get());
 
-    setEfficiencyGraph(mEffGoodRad[aa], Form("Fake_Rad_%s", particleToanalize[aa]), ";Radius [cm];efficiency secondary particle", colorArr[aa] - 9);
+    setEfficiencyGraph(mEffGoodRad[aa], Form("Fake_Rad_%s", particleToAnalyze[aa]), ";Radius [cm];efficiency secondary particle", colorArr[aa] - 9);
     fout.WriteTObject(mEffGoodRad[aa].get());
 
-    setEfficiencyGraph(mEffGoodZ[aa], Form("Good_Z_%s", particleToanalize[aa]), ";Z_{sv} [cm];efficiency secondary particle", colorArr[aa]);
+    setEfficiencyGraph(mEffGoodZ[aa], Form("Good_Z_%s", particleToAnalyze[aa]), ";Z_{sv} [cm];efficiency secondary particle", colorArr[aa]);
     fout.WriteTObject(mEffGoodZ[aa].get());
 
-    setEfficiencyGraph(mEffGoodZ[aa], Form("Fake_Z_%s", particleToanalize[aa]), ";Z_{sv} [cm];efficiency secondary particle", colorArr[aa] - 9);
+    setEfficiencyGraph(mEffGoodZ[aa], Form("Fake_Z_%s", particleToAnalyze[aa]), ";Z_{sv} [cm];efficiency secondary particle", colorArr[aa] - 9);
     fout.WriteTObject(mEffGoodZ[aa].get());
 
     for (int bb = 0; bb < 4; bb++) {
-      setEfficiencyGraph(mEffGoodPts[aa][bb], Form("EffPtGood_%sl%d", particleToanalize[aa], bb), Form("Good Sec Tracks_%s, L%d"
+      setEfficiencyGraph(mEffGoodPts[aa][bb], Form("EffPtGood_%sl%d", particleToAnalyze[aa], bb), Form("Good Sec Tracks_%s, L%d"
                                                                                                        ";#it{p}_{T} (GeV/#it{c});efficiency secondary particle ",
-                                                                                                       particleToanalize[aa], bb),
+                                                                                                       particleToAnalyze[aa], bb),
                          colorArr[aa]);
-      setEfficiencyGraph(mEffFakePts[aa][bb], Form("EffPtFake_%sl%d", particleToanalize[aa], bb), Form("Fake Sec Tracks_%s, L%d"
+      setEfficiencyGraph(mEffFakePts[aa][bb], Form("EffPtFake_%sl%d", particleToAnalyze[aa], bb), Form("Fake Sec Tracks_%s, L%d"
                                                                                                        ";#it{p}_{T} (GeV/#it{c});efficiency secondary particle ",
-                                                                                                       particleToanalize[aa], bb),
+                                                                                                       particleToAnalyze[aa], bb),
                          colorArr[aa]);
-      setEfficiencyGraph(mEffGoodEtas[aa][bb], Form("EffEtaGood_%sl%d", particleToanalize[aa], bb), Form("Good Sec Tracks_%s, L%d"
+      setEfficiencyGraph(mEffGoodEtas[aa][bb], Form("EffEtaGood_%sl%d", particleToAnalyze[aa], bb), Form("Good Sec Tracks_%s, L%d"
                                                                                                          ";#eta ;efficiency secondary particle ",
-                                                                                                         particleToanalize[aa], bb),
+                                                                                                         particleToAnalyze[aa], bb),
                          colorArr[aa]);
-      setEfficiencyGraph(mEffFakeEtas[aa][bb], Form("EffEtaFake_%sl%d", particleToanalize[aa], bb), Form("Fake Sec Tracks_%s, L%d"
+      setEfficiencyGraph(mEffFakeEtas[aa][bb], Form("EffEtaFake_%sl%d", particleToAnalyze[aa], bb), Form("Fake Sec Tracks_%s, L%d"
                                                                                                          ";#eta ;efficiency secondary particle ",
-                                                                                                         particleToanalize[aa], bb),
+                                                                                                         particleToAnalyze[aa], bb),
                          colorArr[aa]);
 
       fout.WriteTObject(mEffGoodPts[aa][bb].get());
@@ -1113,7 +1121,7 @@ void TrackCheckStudy::endOfStream(EndOfStreamContext& ec)
   mLegendPhi->AddEntry("Clone_phi", "clone", "lep");
   mLegendPhi->Draw();
   gPad->Update();
-  auto graph = mEffPhi->GetPaintedGraph(); 
+  auto graph = mEffPhi->GetPaintedGraph();
   graph->SetMinimum(0);
   graph->SetMaximum(1);
   gPad->Update();
@@ -1139,8 +1147,8 @@ void TrackCheckStudy::endOfStream(EndOfStreamContext& ec)
   mCanvasRad->SetLogy();
   mLegendRad = std::make_unique<TLegend>(0.8, 0.4, 0.95, 0.6);
   mLegendRad->SetHeader(Form("%zu events PP ", mKineReader->getNEvents(0)), "C");
-  mLegendRad->AddEntry(Form("Good_Rad_%s", particleToanalize[3]), "good", "lep");
-  mLegendRad->AddEntry(Form("Fake_Rad_%s", particleToanalize[3]), "fake", "lep");
+  mLegendRad->AddEntry(Form("Good_Rad_%s", particleToAnalyze[3]), "good", "lep");
+  mLegendRad->AddEntry(Form("Fake_Rad_%s", particleToAnalyze[3]), "fake", "lep");
   mLegendRad->Draw();
   mCanvasRad->SaveAs("eff_rad_sec.png");
 
@@ -1153,8 +1161,8 @@ void TrackCheckStudy::endOfStream(EndOfStreamContext& ec)
   mCanvasZ->SetLogy();
   mLegendZ = std::make_unique<TLegend>(0.8, 0.4, 0.95, 0.6);
   mLegendZ->SetHeader(Form("%zu events PP ", mKineReader->getNEvents(0)), "C");
-  mLegendZ->AddEntry(Form("Good_Z_%s", particleToanalize[3]), "good", "lep");
-  mLegendZ->AddEntry(Form("Fake_Z_%s", particleToanalize[3]), "fake", "lep");
+  mLegendZ->AddEntry(Form("Good_Z_%s", particleToAnalyze[3]), "good", "lep");
+  mLegendZ->AddEntry(Form("Fake_Z_%s", particleToAnalyze[3]), "fake", "lep");
   mLegendZ->Draw();
   mCanvasZ->SaveAs("eff_Z_sec.png");
   ;
@@ -1171,8 +1179,8 @@ void TrackCheckStudy::endOfStream(EndOfStreamContext& ec)
     } else {
       mEffGoodRad[i]->Draw("pz same");
       mEffFakeRad[i]->Draw("pz same");
-      mLegendRadD->AddEntry(Form("Good_Rad%s", particleToanalize[i]), Form("%s_good", name[i]), "lep");
-      mLegendRadD->AddEntry(Form("Fake_Rad%s", particleToanalize[i]), Form("%s_fake", name[i]), "lep");
+      mLegendRadD->AddEntry(Form("Good_Rad%s", particleToAnalyze[i]), Form("%s_good", name[i]), "lep");
+      mLegendRadD->AddEntry(Form("Fake_Rad%s", particleToAnalyze[i]), Form("%s_fake", name[i]), "lep");
     }
   }
   mLegendRadD->Draw();
@@ -1190,8 +1198,8 @@ void TrackCheckStudy::endOfStream(EndOfStreamContext& ec)
     } else {
       mEffGoodZ[i]->Draw("pz same");
       mEffFakeZ[i]->Draw("pz same");
-      mLegendZD->AddEntry(Form("Good_Z%s", particleToanalize[i]), Form("%s_good", name[i]), "lep");
-      mLegendZD->AddEntry(Form("Fake_Z%s", particleToanalize[i]), Form("%s_fake", name[i]), "lep");
+      mLegendZD->AddEntry(Form("Good_Z%s", particleToAnalyze[i]), Form("%s_good", name[i]), "lep");
+      mLegendZD->AddEntry(Form("Fake_Z%s", particleToAnalyze[i]), Form("%s_fake", name[i]), "lep");
     }
   }
   mLegendZD->Draw();
